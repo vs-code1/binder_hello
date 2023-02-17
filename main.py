@@ -75,27 +75,35 @@ def get_urls():
 
 # sending request to site
 def send_request(url):
-    ua = UserAgent()
-    header = ua.random
+    # ua = UserAgent()
+    # header = ua.random
     http = urllib3.PoolManager()
     response = http.request('GET', url)
-    print(response.status)
+    return response.data
 
 urls = get_urls()
-x = 10
-y = 0
-url = ''
-send_request(urls[2])
-# for url in urls:
-#     pass
-#     print(url)
-
-    # obj_1 = ExtractText(html)
-    # obj_1.all_html()
-    # cata = obj_1.get_catagory()
-    # que = obj_1.get_question()
-    # que_e = obj_1.get_question_exam()
-    # opt = obj_1.get_options()
-    # ans = obj_1.get_answer()
-    # sol = obj_1.get_solution()
-    # write_xml(url, cata, que, que_e, opt, ans, sol)
+x = 1
+action = True
+for url in urls:
+    print(f"{x} <==> {url}")
+    try:
+        html = send_request(urls[2])
+        obj_1 = ExtractText(html)
+        obj_1.all_html()
+        cata = obj_1.get_catagory()
+        que = obj_1.get_question()
+        que_e = obj_1.get_question_exam()
+        opt = obj_1.get_options()
+        ans = obj_1.get_answer()
+        sol = obj_1.get_solution()
+    except:
+        action = False
+    
+    if action:
+        write_xml(url, cata, que, que_e, opt, ans, sol)
+    else:
+        with open('not_work_tr63.txt', 'a', encoding='utf-8') as file:
+            file.write(url)
+            file.write('\n')
+        action = True
+    x += 1
